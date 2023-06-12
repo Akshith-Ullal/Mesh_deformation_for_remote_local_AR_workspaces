@@ -9,8 +9,12 @@ ptCloudt = pointCloud(targetmatrix);
 
 figure
 sz = 25;
-scatter(ptClouds.Location(:,1),ptClouds.Location(:,2),sz,'filled');hold on;
-scatter(ptCloudt.Location(:,1),ptCloudt.Location(:,2),sz,'filled');hold off;
+scatter(ptClouds.Location(:,1),ptClouds.Location(:,2),sz,'red','filled');hold on;
+scatter(ptCloudt.Location(:,1),ptCloudt.Location(:,2),sz,'blue','filled');hold off;
+set(gca,'FontSize',40);
+set(gcf,'color','w');
+xlim([0 1]);
+ylim([0 1]);
 % 
 figure
 pcshowpair(ptClouds,ptCloudt,'MarkerSize',50)
@@ -41,8 +45,13 @@ correspondingpoint(i,:)= ptCloudtarray(minindex(i),:);
 end
 figure
 sz = 25;
-scatter(ptCloudt.Location(:,1),ptCloudt.Location(:,2),sz,'filled');hold on;
-scatter(movingReg.Location(:,1),movingReg.Location(:,2),sz,'filled');hold off;
+scatter(ptCloudt.Location(:,1),ptCloudt.Location(:,2),sz,'red','filled');hold on;
+scatter(movingReg.Location(:,1),movingReg.Location(:,2),sz,'blue','filled');hold off;
+set(gca,'FontSize',40);
+set(gcf,'color','w');
+xlim([0 1]);
+ylim([0 1]);
+
 % 
 figure
 pcshowpair(movingReg,ptCloudt,'MarkerSize',50)

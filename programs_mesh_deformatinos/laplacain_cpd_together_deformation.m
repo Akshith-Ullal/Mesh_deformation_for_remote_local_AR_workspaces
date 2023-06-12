@@ -1,9 +1,15 @@
-%for circular outer boundary
-% th = linspace(0,2*pi,100);
-% th = th(1:end-1);
-% V = [cos(th)',sin(th)'];
 
-% For square outer boundary 
+%for circular outer boundary
+ %th = linspace(0,2*pi,100);
+ %th = th(1:end-1);
+ %Vsource = [(cos(th)/8)',(sin(th)/8)'];
+% %for ellipse shape
+% a=2;
+% b=1;
+% Vtarget = [(a*cos(th)/8)',(b*sin(th)/8)'];
+
+
+%For square outer boundary 
 thsquare = linspace(0,2,25);
 zerosth = zeros(size(thsquare));
 onesth = 2*ones(size(thsquare));
@@ -14,7 +20,11 @@ V01_11 = [thsquare',onesth'];
 V=[V00_01;V00_10;V10_11;V01_11];
 V=V-1;
 
-
+%Indexes of the 4 corners of the rectangle/square
+RowIdx_00 = find(ismember(V, [-1 -1],'rows'));
+RowIdx_01 = find(ismember(V, [-1 1],'rows'));
+RowIdx_10 = find(ismember(V, [1 -1],'rows'));
+RowIdx_11 = find(ismember(V, [1 1],'rows'));
 %centering Vt
 Vscenter=Vsource-0.5;
 %for circle
@@ -26,13 +36,15 @@ Ets = [(1:size(Vscenter,1))',[(2:size(Vscenter,1))';1]];
 Ets = [Eorg;Ets+size(V,1)];
 %V = [V;0.4*V];
 Vts= [V;1.0*Vscenter];
-% disp(size(V))
+%disp(size(V))
 
 figure
 [TVs,TFs,TVMs,TEMs] = triangulate(Vts,Ets,'Flags','-q20','Holes',[0,0]);
 tsurf(TFs,TVs);
 title('Source - Local workspace');
 axis equal;
+
+writeOBJ('C:/gptoolbox/programs_mesh_deformatinos/example_meshes/Vsource_mesh_ieeevrposter_1.obj', TVs,TFs);
 
 Vtcenter=Vtarget-0.5;
 %for circle
@@ -51,7 +63,9 @@ figure
 tsurf(TFt,TVt);
 title('Target - Remote workspace');
 axis equal;
-
+% 
+ writeOBJ('C:/gptoolbox/programs_mesh_deformatinos/example_meshes/Vtarget_mesh_ieeevrposter_1.obj', TVt,TFt);
+% 
 TVsource = TVs(size(V,1)+1:size(TEMs,1),:);
 TVtarget = TVt(size(V,1)+1:size(TEMt,1),:);
 
@@ -100,8 +114,8 @@ scatter(Vsourcetotarget(:,1),Vsourcetotarget(:,2),sz,'filled');hold off;
 
 for i = 1:size(TVsource,1)
 
-    d_handlesinner(i,1) = TVtarget(sourcetotargetindex(i,:),1) - TVsource(i,1);
-    d_handlesinner(i,2) = TVtarget(sourcetotargetindex(i,:),2) - TVsource(i,2);
+    d_handlesinner(i,1) = (TVtarget(sourcetotargetindex(i,:),1) - TVsource(i,1));
+    d_handlesinner(i,2) = TVtarget(sourcetotargetindex(i,:),2) - TVsource(i,2)-0.5;
 
 %     d_handlesinner(i,1) = TVsource(i,1) - Vsourcetotarget(i,1);
 %     d_handlesinner(i,2) = TVsource(i,2) - Vsourcetotarget(i,2);
@@ -123,15 +137,15 @@ indexinner = [size(V,1)+1:size(TEMs,1)]';
 %handles = [indexinner;indexouter];
 %for rectangle
 handles = [indexinner;indexouter];
-% v0=[0.3,0.2,0];
+v0=[0.5,0,0];
 %For circle
 %vouter=[0,0,0];
 %For rectangle
-vouter00_01=[-0.9,0,0];
+vouter00_01=[-0.2,0,0];
 vouter00_10=[0,0,0];
-vouter01_11=[0.9,0,0];
+vouter01_11=[0.2,0,0];
 vouter10_11=[0,0,0];
-% d_handlesinner=repelem(v0,[size(indexinner,1)],[1]);
+%d_handlesinner=repelem(v0,[size(indexinner,1)],[1]);
 % %d_handlesinner=Vsourcetotarget;
 %For circle
 %d_handlesouter=repelem(vouter,[size(indexouter,1)],[1]);
@@ -141,11 +155,21 @@ d_handlesouter00_10=repelem(vouter00_10,[size(V00_10,1)],[1]);
 d_handlesouter01_11=repelem(vouter01_11,[size(V01_11,1)],[1]);
 d_handlesouter10_11=repelem(vouter10_11,[size(V10_11,1)],[1]);
 d_handlesouter= [d_handlesouter00_01;d_handlesouter00_10;d_handlesouter01_11;d_handlesouter10_11];
-% % d_handles =[d_handles0;d_handles1];
-%for circle
-%d_handles =[d_handlesinner;d_handlesouter];
+
+% d_handles =[d_handles0;d_handles1];
+% for circle
+% d_handles =[d_handlesinner;d_handlesouter];
 %for rectangle
 d_handles =[d_handlesinner;d_handlesouter];
+% vector for point 00 of square
+d_handles(RowIdx_00+size(d_handlesinner,1),:) = [-0.2,0,0;-0.2,0,0];
+% vector for point 00 of square
+d_handles(RowIdx_01+size(d_handlesinner,1),:) = [-0.2,0,0;-0.2,0,0];
+% vector for point 00 of square
+d_handles(RowIdx_10+size(d_handlesinner,1),:) = [0.2,0,0;0.2,0,0];
+% vector for point 00 of square
+d_handles(RowIdx_11+size(d_handlesinner,1),:) = [0.2,0,0;0.2,0,0];
+
 % % 
 figure
 tsurf(TFs,TVs)
@@ -160,6 +184,9 @@ B = zeros(size(TVs,1),3);
 d = min_quad_with_fixed(A,B,handles,d_handles);
 
 figure()
-tsurf(TFs,TVs+d(:,1:2))
+TVSmod = TVs+d(:,1:2);
+tsurf(TFs,TVSmod)
 title('Deformed source mesh to fit remote workspace obstacle shape');
 axis equal
+
+ writeOBJ('C:/gptoolbox/programs_mesh_deformatinos/example_meshes/Vsource_to_target_deformed_mesh_ieeevrposter_1.obj', TVs+d(:,1:2),TFs);
