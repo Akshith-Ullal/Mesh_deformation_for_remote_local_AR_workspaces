@@ -1,6 +1,6 @@
 
 %addpath(genpath('C:/Users/ullala/Desktop/mesh_deformation'));
-[V,F] = readOBJ('C:/gptoolbox/programs_mesh_deformatinos/example_meshes/circular_mesh_triangulate.obj');
+[V,F] = readOBJ('D:/GitHub/Mesh_deformation_for_remote_local_AR_workspaces/programs_mesh_deformatinos/example_meshes/circular_mesh_triangulate.obj');
 %[V,F] = readOBJ('C:/gptoolbox/spot/spot_triangulated.obj');
 E=sqrt((V(:,1) .^ 2 + (V(:,2) .^ 2)));
 index0=find(E==0.4);

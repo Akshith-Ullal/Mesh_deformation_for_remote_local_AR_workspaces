@@ -1,6 +1,6 @@
-[TVs_read,TFs_read] = readOBJ('C:/gptoolbox/programs_mesh_deformatinos/example_meshes/Vsource_mesh_ieeevrposter_1.obj');
+[TVs_read,TFs_read] = readOBJ('D:/GitHub/Mesh_deformation_for_remote_local_AR_workspaces/programs_mesh_deformatinos/example_meshes/Vsource_mesh_ieeevrposter_1.obj');
 TVs_read = [TVs_read(:,1),TVs_read(:,2)];
-[TVst_read,TFst_read] = readOBJ('C:/gptoolbox/programs_mesh_deformatinos/example_meshes/Vsource_to_target_deformed_mesh_ieeevrposter_1.obj');
+[TVst_read,TFst_read] = readOBJ('D:/GitHub/Mesh_deformation_for_remote_local_AR_workspaces/programs_mesh_deformatinos/example_meshes/Vsource_to_target_deformed_mesh_ieeevrposter_1.obj');
 TVst_read = [TVst_read(:,1),TVst_read(:,2)];
 
 % points to plot
