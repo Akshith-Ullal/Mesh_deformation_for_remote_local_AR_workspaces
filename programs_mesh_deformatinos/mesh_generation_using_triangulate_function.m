@@ -41,7 +41,10 @@ Vtt= [V;1.8*Vtcenter];
 %         E(r,2) = r+1;
 %        end
 % end
-[TV,TF,TVM,TEM] = triangulate(Vtt,Et,'Flags','-q20','Holes',[0,0]);
+% Make sure to have the triangle library downloaded and set the path on
+% wrappers--> path_to_triangle.m 
+%[TV,TF,TVM,TEM] = triangulate(Vtt,Et,'Flags','-q20','Holes',[0,0]);
+%[TV,TF,TN] = triangle(Vtt);
 tsurf(TF,TV);
 axis equal;
 % E=sqrt((TV(:,1) .^ 2 + (TV(:,2) .^ 2)));

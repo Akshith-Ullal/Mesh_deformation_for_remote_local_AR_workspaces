@@ -22,7 +22,7 @@ Vtcenter=Vt-0.5;
 %for circle
 %Eorg = [(1:size(V,1))',[(2:size(V,1))';1]];
 %for square or rectangle 
-Eorg = [(1:size(V,1))',[(2:size(V,1))';1]];
+Eorg = [(1:size(V,1)-1)',[(2:size(V,1))']];
 Et = [(1:size(Vtcenter,1))',[(2:size(Vt,1))';1]];
 %E = [Eorg;Eorg+size(V,1)];
 Et = [Eorg;Et+size(V,1)];
@@ -41,7 +41,10 @@ Vtt= [V;1.8*Vtcenter];
 %         E(r,2) = r+1;
 %        end
 % end
+% Make sure to have the triangle library downloaded and set the path on
+% wrappers--> path_to_triangle.m 
 [TV,TF,TVM,TEM] = triangulate(Vtt,Et,'Flags','-q20','Holes',[0,0]);
+[TV,TF,TN] = triangle(V,E
 tsurf(TF,TV);
 axis equal;
 % E=sqrt((TV(:,1) .^ 2 + (TV(:,2) .^ 2)));

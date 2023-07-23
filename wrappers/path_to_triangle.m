@@ -8,7 +8,8 @@ function s = path_to_triangle()
   % See also: triangle
 
   if ispc
-    s = 'c:/prg/lib/triangle/Release/triangle.exe';
+    %s = 'c:/prg/lib/triangle/Release/triangle.exe';
+    s='D:/GitHub/Mesh_deformation_for_remote_local_AR_workspaces/triangle/triangle.exe';
   elseif isunix || ismac
     [status, s] = system('which triangle');
     s = strtrim(s);
