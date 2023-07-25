@@ -1,11 +1,83 @@
-th = linspace(0,2*pi,100);
-th = th(1:end-1);
-V = [cos(th)',sin(th)'];
-E = [(1:size(V,1))',[(2:size(V,1))';1]];
-E = [E;E+size(V,1)];
-E = [E;E+size(V,1)];
-V = [V;0.4.*V;0.2*V];
-plot_edges(V,E,'-k','LineWidth',5)
+outsize = 4; 
 
-[U,G] = triangle(V,E,[0,0],'Flags','-q20');
-tsurf(G,U)
+
+node = [                % list of xy "node" coordinates
+        0, 0                % outer square
+        9, 0
+        9, 9
+        0, 9
+        4.2,4.3             % inner obstacle co-ordinates
+        4, 4                
+        5, 4
+        5, 5
+        4, 5
+        5.4,5.5
+        6, 4
+        7, 4
+        7, 5
+        6, 5 ] ;
+
+nodetest = [
+        0,0
+        9,0
+        9,9
+        0,9;
+        vobs1;vobs2]
+
+    edge = [                % list of "edges" between nodes
+        1, 2                % outer square
+        2, 3
+        3, 4
+        4, 1
+        5, 6                % inner obstacle co-ordinates
+        6, 7
+        7, 8
+        8, 9
+        9, 5
+        10, 11
+        11, 12
+        12, 13
+        13, 14
+        14, 10] ;
+
+    edgetest =[1:size(nodetest, 1)];
+    edgetest1 = [2:outsize;1;outsize+2:size(vobs1,1)+outsize-1;outsize+1;];
+
+%------------------------------------------- call mesh-gen.
+   [vert,etri, ...
+    tria,tnum] = refine2(node,edge) ;
+
+%------------------------------------------- draw tria-mesh
+    figure;
+    patch('faces',tria(:,1:3),'vertices',vert, ...
+        'facecolor','w', ...
+        'edgecolor',[.2,.2,.2]) ;
+    hold on; axis image off;
+    patch('faces',edge(:,1:2),'vertices',node, ...
+        'facecolor','w', ...
+        'edgecolor',[.1,.1,.1], ...
+        'linewidth',1.5) ;
+
+%------------------------------------------- call mesh-gen.
+    hfun = +.5 ;            % uniform "target" edge-lengths
+
+   [vert,etri, ...
+    tria,tnum] = refine2(node,edge,[],[],hfun) ;
+
+%------------------------------------------- draw tria-mesh
+    figure;
+    patch('faces',tria(:,1:3),'vertices',vert, ...
+        'facecolor','w', ...
+        'edgecolor',[.2,.2,.2]) ;
+    hold on; axis image off;
+    patch('faces',edge(:,1:2),'vertices',node, ...
+        'facecolor','w', ...
+        'edgecolor',[.1,.1,.1], ...
+        'linewidth',1.5) ;
+
+    drawnow;
+
+    set(figure(1),'units','normalized', ...
+        'position',[.05,.50,.30,.35]) ;
+    set(figure(2),'units','normalized', ...
+        'position',[.35,.50,.30,.35]) ;
