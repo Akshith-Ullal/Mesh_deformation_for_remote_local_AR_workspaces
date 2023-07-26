@@ -1,5 +1,6 @@
 outsize = 4; 
-
+%vobs1 = vobs1*2;
+%vobs2 = vobs2*2 + 2;
 
 node = [                % list of xy "node" coordinates
         0, 0                % outer square
@@ -40,8 +41,9 @@ nodetest = [
         13, 14
         14, 10] ;
 
-    edgetest =[1:size(nodetest, 1),2:outsize;1;outsize+2:]
-
+    edgetestfirstcol =[1:size(nodetest, 1)];
+    edgetestsecondcol = [2:outsize,1,outsize+2:size(vobs1,1)+outsize,outsize+1,outsize+size(vobs1,1)+2:size(vobs1,1)+outsize+size(vobs1,1),outsize+size(vobs1,1)+1];
+ 
 %------------------------------------------- call mesh-gen.
    [vert,etri, ...
     tria,tnum] = refine2(node,edge) ;
