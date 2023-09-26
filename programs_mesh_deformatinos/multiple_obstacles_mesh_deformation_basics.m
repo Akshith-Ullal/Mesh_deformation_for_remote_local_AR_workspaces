@@ -1,6 +1,6 @@
 outsize = 4; 
-%vobs1 = vobs1*2;
-%vobs2 = vobs2*2 + 2;
+vobs1 = vobs1*2;
+vobs2 = vobs2*2 + 2;
 
 % node = [                % list of xy "node" coordinates
 %         0, 0                % outer square
@@ -41,7 +41,7 @@ node = [
     %     13, 14
     %     14, 10] ;
 
-    edgetestfirstcol =[1:size(nodetest, 1)];
+    edgetestfirstcol =[1:size(node, 1)];
     edgetestsecondcol = [2:outsize,1,outsize+2:size(vobs1,1)+outsize,outsize+1,outsize+size(vobs1,1)+2:size(vobs1,1)+outsize+size(vobs2,1),outsize+size(vobs1,1)+1];
     edge = [edgetestfirstcol',edgetestsecondcol'];
 %------------------------------------------- call mesh-gen.
