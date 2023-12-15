@@ -1,12 +1,12 @@
 outsize = 4; % number of mesh vertices on the outer boundary 
 vobs1scale = 2;
 vobs2scale = 2;
-obstaclemovescale = false;
+obstaclemovescale = true;
 if(obstaclemovescale)
     posvobs1= [1,2]; % the x and y cordinates with which you want to shift obstacle 1;
-    posvobs2= [5,6]; % the x and y cordinates with which you want to shift obstacle 2;
-    vobs1=  vobs1* vobs1scale;
-    vobs2=  vobs2* vobs2scale;
+    posvobs2= [1.5,2.5]; % the x and y cordinates with which you want to shift obstacle 2;
+    %vobs1=  vobs1* vobs1scale;
+    %vobs2=  vobs2* vobs2scale;
     vobs1 = [vobs1(:,1)+posvobs1(1,1),vobs1(:,2)+posvobs1(1,2)]
     vobs2 = [vobs2(:,1)+posvobs2(1,1),vobs2(:,2)+posvobs2(1,2)]
 end
@@ -87,7 +87,7 @@ node = [
 % 
 %     drawnow;
 % 
-%     set(figure(1),'units','normalized', ...
+%     set(figure(1),'units','normalized', ... 
 %         'position',[.05,.50,.30,.35]) ;
 %     set(figure(2),'units','normalized', ...
 %         'position',[.35,.50,.30,.35]) ;
@@ -96,12 +96,30 @@ node = [
 
 % draw the min enclosing obstacles 
 P=vobs';
+P1=vobs1';
+P2=vobs2';
 % for calculating minvol ellipse efficiently
  K = convhulln(P');  
  K = unique(K(:));  
  Q = P(:,K);
  [A, c] = MinVolEllipse(Q, .01)
+ % first object vol
+ K1 = convhulln(P1');  
+ K1 = unique(K1(:));  
+ Q1 = P1(:,K1);
+ [A1, c1] = MinVolEllipse(Q1, .01)
+ % second obj vol
+ K2 = convhulln(P2');  
+ K2 = unique(K2(:));  
+ Q2 = P2(:,K2);
+ [A2, c2] = MinVolEllipse(Q2, .01)
  figure()
- scatter(P(1,:),P(2,:));hold on;
+ scatter(P(1,:),P(2,:),"filled");hold on;
  Ellipse_plot(A, c);
+ figure()
+ scatter(P1(1,:),P1(2,:),"filled");hold on;
+ Ellipse_plot(A1, c1);
+ figure()
+ scatter(P2(1,:),P2(2,:),"filled");hold on;
+ Ellipse_plot(A2, c2);
 

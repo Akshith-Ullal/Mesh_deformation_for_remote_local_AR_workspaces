@@ -103,7 +103,7 @@ end
 % Plot the ellipse
 %----------------------------------------
 if strcmp(Type,'2D'),
-    plot(X(1,:),X(2,:));
+    plot(X(1,:),X(2,:),'LineWidth',4);
     hold on;
     plot(C(1),C(2),'r*');
     axis equal, grid
