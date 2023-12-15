@@ -1,3 +1,9 @@
+
+outsize = 4; 
+vobs1 = vobs1*2;
+vobs2 = vobs2*2 + 2;
+
+
 outsize = 4; % number of mesh vertices on the outer boundary 
 vobs1scale = 2;
 vobs2scale = 2;
@@ -11,6 +17,7 @@ if(obstaclemovescale)
     vobs2 = [vobs2(:,1)+posvobs2(1,1),vobs2(:,2)+posvobs2(1,2)]
 end
 vobs=[vobs1;vobs2]; % mesh vertices of all interioir elements
+
 % node = [                % list of xy "node" coordinates
 %         0, 0                % outer square
 %         9, 0
