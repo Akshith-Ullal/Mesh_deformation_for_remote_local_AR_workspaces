@@ -1,8 +1,8 @@
 
 outsize = 4; 
-vobs1 = vobs1*2;
-vobs2 = vobs2*2 + 2;
-
+%vobs1 = vobs1*2;
+%vobs2 = vobs2*2 + 2;
+max = 4;
 
 outsize = 4; % number of mesh vertices on the outer boundary 
 vobs1scale = 2;
@@ -36,9 +36,9 @@ vobs=[vobs1;vobs2]; % mesh vertices of all interioir elements
 
 node = [
         0,0
-        9,0
-        9,9
-        0,9;
+        max,0
+        max,max
+        0,max;
         vobs1;vobs2]
 
     % edge = [                % list of "edges" between nodes
@@ -63,6 +63,7 @@ node = [
 %------------------------------------------- call mesh-gen.
    [vert,etri, ...
     tria,tnum] = refine2(node,edge) ;
+
 
 %------------------------------------------- draw tria-mesh
     figure;
@@ -99,34 +100,61 @@ node = [
 %     set(figure(2),'units','normalized', ...
 %         'position',[.35,.50,.30,.35]) ;
 
+%perform mesh deformation
+ 
+F=tria;
+V=vert;
+[rowmin,columnmin]= find(vert == 0) %finding all vertices at the boundary of the room
+[rowmax,columnmax]= find(vert == max) %finidnig all vertices at the boundary of the room
+rowzero = [rowmax;rowmin]
+movevobs1 = [1,0]
+vobs1col =5:5+size(vobs1,1)
+handles = [rowzero;vobs1col'];
+d_handles = [zeros(size(rowzero,1), 2);repelem(movevobs1,[size(vobs1col',1)],[1])];
+% handles are the indices that you want to deform and d_handle specifies by
+% how much you want to deform them. 
+%TRsource = triangulation(F,V);
+%triplot(TRsource);hold on;
+tsurf(F,V)
+hold on;
+sct(V(handles,:),'filled','r');
+qvr(V(handles,:),d_handles) 
+axis equal
 
+A = cotmatrix(V,F);
+B = zeros(size(V,1),2);
+d = min_quad_with_fixed(A,B,handles,d_handles);
 
-% draw the min enclosing obstacles 
-P=vobs';
-P1=vobs1';
-P2=vobs2';
-% for calculating minvol ellipse efficiently
- K = convhulln(P');  
- K = unique(K(:));  
- Q = P(:,K);
- [A, c] = MinVolEllipse(Q, .01)
- % first object vol
- K1 = convhulln(P1');  
- K1 = unique(K1(:));  
- Q1 = P1(:,K1);
- [A1, c1] = MinVolEllipse(Q1, .01)
- % second obj vol
- K2 = convhulln(P2');  
- K2 = unique(K2(:));  
- Q2 = P2(:,K2);
- [A2, c2] = MinVolEllipse(Q2, .01)
- figure()
- scatter(P(1,:),P(2,:),"filled");hold on;
- Ellipse_plot(A, c);
- figure()
- scatter(P1(1,:),P1(2,:),"filled");hold on;
- Ellipse_plot(A1, c1);
- figure()
- scatter(P2(1,:),P2(2,:),"filled");hold on;
- Ellipse_plot(A2, c2);
+figure()
+tsurf(F,V+d)
+axis equal
 
+% % draw the min enclosing obstacles 
+% P=vobs';
+% P1=vobs1';
+% P2=vobs2';
+% % for calculating minvol ellipse efficiently
+%  K = convhulln(P');  
+%  K = unique(K(:));  
+%  Q = P(:,K);
+%  [A, c] = MinVolEllipse(Q, .01)
+%  % first object vol
+%  K1 = convhulln(P1');  
+%  K1 = unique(K1(:));  
+%  Q1 = P1(:,K1);
+%  [A1, c1] = MinVolEllipse(Q1, .01)
+%  % second obj vol
+%  K2 = convhulln(P2');  
+%  K2 = unique(K2(:));  
+%  Q2 = P2(:,K2);
+%  [A2, c2] = MinVolEllipse(Q2, .01)
+%  figure()
+%  scatter(P(1,:),P(2,:),"filled");hold on;
+%  Ellipse_plot(A, c);
+%  figure()
+%  scatter(P1(1,:),P1(2,:),"filled");hold on;
+%  Ellipse_plot(A1, c1);
+%  %figure()
+%  scatter(P2(1,:),P2(2,:),"filled");hold on;
+%  Ellipse_plot(A2, c2);
+% 

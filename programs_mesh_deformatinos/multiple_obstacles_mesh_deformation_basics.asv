@@ -1,16 +1,23 @@
+
+outsize = 4; 
+%vobs1 = vobs1*2;
+%vobs2 = vobs2*2 + 2;
+
+
 outsize = 4; % number of mesh vertices on the outer boundary 
 vobs1scale = 2;
 vobs2scale = 2;
-obstaclemovescale = false;
+obstaclemovescale = true;
 if(obstaclemovescale)
     posvobs1= [1,2]; % the x and y cordinates with which you want to shift obstacle 1;
-    posvobs2= [5,6]; % the x and y cordinates with which you want to shift obstacle 2;
-    vobs1=  vobs1* vobs1scale;
-    vobs2=  vobs2* vobs2scale;
+    posvobs2= [1.5,2.5]; % the x and y cordinates with which you want to shift obstacle 2;
+    %vobs1=  vobs1* vobs1scale;
+    %vobs2=  vobs2* vobs2scale;
     vobs1 = [vobs1(:,1)+posvobs1(1,1),vobs1(:,2)+posvobs1(1,2)]
     vobs2 = [vobs2(:,1)+posvobs2(1,1),vobs2(:,2)+posvobs2(1,2)]
 end
 vobs=[vobs1;vobs2]; % mesh vertices of all interioir elements
+
 % node = [                % list of xy "node" coordinates
 %         0, 0                % outer square
 %         9, 0
@@ -57,6 +64,7 @@ node = [
    [vert,etri, ...
     tria,tnum] = refine2(node,edge) ;
 
+
 %------------------------------------------- draw tria-mesh
     figure;
     patch('faces',tria(:,1:3),'vertices',vert, ...
@@ -92,12 +100,36 @@ node = [
 %     set(figure(2),'units','normalized', ...
 %         'position',[.35,.50,.30,.35]) ;
 
+%perform mesh deformation
+ 
+F=tria;
+V=vert;
+[rowmin,columnmin]= find(vert == 0) %finding all vertices at the boundary of the room
+[rowmax,columnmax]= find(vert == 9) %finidnig all vertices at the boundary of the room
+rowzero = [rowmax;rowmin]
+handles = [rowzero;12,13,14,15];
+d_handles = [zeros(size(rowzero,1), 2);0];
+% handles are the indices that you want to deform and d_handle specifies by
+% how much you want to deform them. 
+TRsource = triangulation(F,V);
+triplot(TRsource);hold on;
+%tsurf(F,V)
+%hold on;
+sct(V(handles,:),'filled','r');
+qvr(V(handles,:),d_handles) 
+axis equal
 
+A = cotmatrix(V,F);
+B = zeros(size(V,1),2);
+d = min_quad_with_fixed(A,B,handles,d_handles);
 
+figure()
+tsurf(F,V+d)
+axis equal
 % draw the min enclosing obstacles 
-P=vobs1';
-%P1=vobs1';
-%P2=vobs2';
+P=vobs';
+P1=vobs1';
+P2=vobs2';
 % for calculating minvol ellipse efficiently
  K = convhulln(P');  
  K = unique(K(:));  
@@ -109,15 +141,17 @@ P=vobs1';
  Q1 = P1(:,K1);
  [A1, c1] = MinVolEllipse(Q1, .01)
  % second obj vol
- K = convhulln(P');  
- K = unique(K(:));  
- Q = P(:,K);
- [A, c] = MinVolEllipse(Q, .01)
+ K2 = convhulln(P2');  
+ K2 = unique(K2(:));  
+ Q2 = P2(:,K2);
+ [A2, c2] = MinVolEllipse(Q2, .01)
  figure()
  scatter(P(1,:),P(2,:),"filled");hold on;
  Ellipse_plot(A, c);
-  scatter(P(1,:),P(2,:),"filled");hold on;
- Ellipse_plot(A, c);
-  scatter(P(1,:),P(2,:),"filled");hold on;
- Ellipse_plot(A, c);
+ figure()
+ scatter(P1(1,:),P1(2,:),"filled");hold on;
+ Ellipse_plot(A1, c1);
+ %figure()
+ scatter(P2(1,:),P2(2,:),"filled");hold on;
+ Ellipse_plot(A2, c2);
 
