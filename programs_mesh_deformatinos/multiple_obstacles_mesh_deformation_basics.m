@@ -7,7 +7,7 @@ max = 4;
 outsize = 4; % number of mesh vertices on the outer boundary 
 vobs1scale = 2;
 vobs2scale = 2;
-obstaclemovescale = true;
+obstaclemovescale = false;
 if(obstaclemovescale)
     posvobs1= [1,2]; % the x and y cordinates with which you want to shift obstacle 1;
     posvobs2= [1.5,2.5]; % the x and y cordinates with which you want to shift obstacle 2;
@@ -104,13 +104,15 @@ node = [
  
 F=tria;
 V=vert;
-[rowmin,columnmin]= find(vert == 0) %finding all vertices at the boundary of the room
-[rowmax,columnmax]= find(vert == max) %finidnig all vertices at the boundary of the room
-rowzero = [rowmax;rowmin]
-movevobs1 = [1,0]
-vobs1col =5:5+size(vobs1,1)
-handles = [rowzero;vobs1col'];
-d_handles = [zeros(size(rowzero,1), 2);repelem(movevobs1,[size(vobs1col',1)],[1])];
+[rowmin,columnmin]= find(vert == 0); %finding all vertices at the boundary of the room
+[rowmax,columnmax]= find(vert == max); %finidnig all vertices at the boundary of the room
+rowzero = [rowmax;rowmin];
+movevobs1 = [-1,0];
+movevobs2 = [1,0];
+vobs1col =5:5+size(vobs1,1);
+vobs2co1 =5+size(vobs1,1)+1:5+size(vobs1,1)+1+size(vobs2,1);
+handles = [rowzero;vobs1col';vobs2co1'];
+d_handles = [zeros(size(rowzero,1), 2);repelem(movevobs1,[size(vobs1col',1)],[1]);repelem(movevobs2,[size(vobs2co1',1)],[1])];
 % handles are the indices that you want to deform and d_handle specifies by
 % how much you want to deform them. 
 %TRsource = triangulation(F,V);
